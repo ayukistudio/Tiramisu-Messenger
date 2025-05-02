@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiramisu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+</head>
+<body class="bg-gray-900 text-white flex min-h-screen">
+    <div id="sidebar" class="bg-gray-800 p-6 shadow-xl flex flex-col transition-all duration-300 animate-slide-in" style="width: 33%;">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-2xl font-bold flex items-center">
+                <img src="/teramissu.webp" class="w-6 h-6 mr-2" alt="TiramisuChat Icon"> Tiramisu
+            </h1>
+            <button id="settingsBtn" class="p-2 bg-gray-600 hover:bg-gray-500 rounded-md transition-all duration-200" title="Настройки">
+                <i class="fas fa-wrench"></i>
+            </button>
+        </div>
+        <div id="settingsPanel" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-gray-800 p-6 rounded-md shadow-xl w-full max-w-md space-y-4 animate-fade-in">
+                <h2 class="text-xl font-bold" data-i18n="settings.title">Настройки</h2>
+                <div>
+                    <label class="text-gray-400" data-i18n="settings.backgroundColor">Цвет фона:</label>
+                    <input id="bgColorInput" type="color" class="w-full h-10 bg-gray-700 rounded-md mt-1">
+                </div>
+                <div>
+                    <label class="text-gray-400" data-i18n="settings.backgroundImage">Фоновое изображение:</label>
+                    <label class="custom-file-upload mt-1">
+                        <input id="bgImageInput" type="file" accept="image/png,image/jpeg">
+                        <i class="fas fa-image mr-2"></i> <span data-i18n="settings.chooseImage">Выбрать изображение</span>
+                    </label>
+                    <div id="bgPreview" class="hidden mt-2">
+                        <p class="text-sm text-gray-400 mb-2" data-i18n="settings.preview">Предпросмотр:</p>
+                        <img id="bgPreviewImage" class="w-full h-24 rounded-md object-cover" src="" alt="Предпросмотр фона">
+                    </div>
+                </div>
+                <div>
+                    <label class="text-gray-400" data-i18n="settings.language">Язык:</label>
+                    <select id="languageSelect" class="w-full p-3 bg-gray-700 rounded-md mt-1">
+                        <option value="ru">Русский</option>
+                        <option value="en">English</option>
+                    </select>
+                </div>
+                <div class="flex space-x-2">
+                    <button id="applySettingsBtn" class="flex-1 p-3 bg-gray-200 text-gray-900 hover:bg-gray-300 rounded-md font-semibold transition-all duration-200" data-i18n="settings.apply">Применить</button>
+                    <button id="closeSettingsBtn" class="flex-1 p-3 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold transition-all duration-200" data-i18n="settings.close">Закрыть</button>
+                </div>
+            </div>
+        </div>
+        <div id="loginSection" class="space-y-4">
+            <div class="relative">
+                <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                <input id="username" type="text" placeholder="Имя пользователя" class="w-full p-3 pl-10 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 animate-fade-in" data-i18n-placeholder="auth.username">
+            </div>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                <input id="password" type="password" placeholder="Пароль" class="w-full p-3 pl-10 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 animate-fade-in" data-i18n-placeholder="auth.password">
+            </div>
+            <button id="loginBtn" class="w-full p-3 bg-gray-200 text-gray-900 hover:bg-gray-300 rounded-md font-semibold transition-all duration-200 flex items-center justify-center animate-slide-in" data-i18n="auth.login">
+                <i class="fas fa-sign-in-alt mr-2"></i> Войти
+            </button>
+            <button id="registerBtn" class="w-full p-3 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold transition-all duration-200 flex items-center justify-center animate-slide-in" data-i18n="auth.register">
+                <i class="fas fa-user-plus mr-2"></i> Зарегистрироваться
+            </button>
+        </div>
+        <div id="mainSection" class="hidden space-y-4 flex-1">
+            <div id="profile" class="flex items-center space-x-4 p-3 bg-gray-700 rounded-md transition-all duration-200 hover:bg-gray-600 animate-fade-in">
+                <img id="userAvatar" class="w-12 h-12 rounded-full object-cover" src="https://via.placeholder.com/40" alt="Аватар">
+                <div>
+                    <p id="userName" class="font-semibold"></p>
+                    <p id="userId" class="text-sm text-gray-400"></p>
+                </div>
+                <button id="editProfileBtn" class="ml-auto p-2 bg-gray-600 hover:bg-gray-500 rounded-md transition-all duration-200 animate-slide-in">
+                    <i class="fas fa-edit"></i>
+                </button>
+            </div>
+            <div id="editProfileSection" class="hidden space-y-4 p-3 bg-gray-700 rounded-md transition-all duration-200 animate-fade-in">
+                <div class="relative">
+                    <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                    <input id="newUsername" type="text" placeholder="Новое имя" class="w-full p-3 pl-10 bg-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 animate-fade-in" data-i18n-placeholder="profile.newUsername">
+                </div>
+                <div class="relative">
+                    <label class="custom-file-upload">
+                        <input id="newAvatar" type="file" accept="image/png,image/jpeg">
+                        <i class="fas fa-image mr-2"></i> <span data-i18n="profile.chooseAvatar">Выбрать аватар</span>
+                    </label>
+                </div>
+                <div id="avatarPreview" class="hidden animate-fade-in">
+                    <p class="text-sm text-gray-400 mb-2" data-i18n="profile.preview">Предпросмотр:</p>
+                    <img id="previewImage" class="w-24 h-24 rounded-full mx-auto object-cover" src="" alt="Предпросмотр аватарки">
+                </div>
+                <button id="saveProfileBtn" class="w-full p-3 bg-gray-200 text-gray-900 hover:bg-gray-300 rounded-md font-semibold transition-all duration-200 flex items-center justify-center animate-slide-in" data-i18n="profile.save">
+                    <i class="fas fa-save mr-2"></i> Сохранить
+                </button>
+            </div>
+            <div class="flex space-x-2">
+                <div class="relative flex-1">
+                    <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    <input id="searchUserId" type="number" placeholder="ID пользователя" class="w-full p-3 pl-10 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 animate-fade-in" data-i18n-placeholder="search.userId">
+                </div>
+                <button id="searchBtn" class="p-3 bg-gray-200 text-gray-900 hover:bg-gray-300 rounded-md font-semibold transition-all duration-200 animate-slide-in" data-i18n="search.search">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            <div id="contacts" class="space-y-2"></div>
+        </div>
+        <p id="error" class="text-red-500 mt-4 hidden transition-all duration-200"></p>
+    </div>
+    <div class="resizer" style="width: 5px; background: #424242; cursor: col-resize;"></div>
+    <div class="flex-1 p-6"></div>
+    <script src="/i18n.js"></script>
+    <script src="/app.js"></script>
+</body>
+</html>

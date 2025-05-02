@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Tiramisu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body class="bg-gray-900 text-white flex items-center justify-center min-h-screen">
+    <div class="bg-gray-800 p-8 rounded-md shadow-xl w-full max-w-md transition-all duration-300 animate-fade-in">
+        <h1 class="text-2xl font-bold mb-6 flex items-center">
+            <i class="fas fa-user-plus mr-2"></i> Регистрация
+        </h1>
+        <div class="space-y-4">
+            <div class="relative">
+                <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+                <input id="username" type="text" placeholder="Имя пользователя" class="w-full p-3 pl-10 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 animate-fade-in">
+            </div>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-3 top-3 text-gray-400"></i>
+                <input id="password" type="password" placeholder="Пароль" class="w-full p-3 pl-10 bg-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-200 transition-all duration-200 animate-fade-in">
+            </div>
+            <div class="relative">
+                <label class="custom-file-upload">
+                    <input id="avatar" type="file" accept="image/png,image/jpeg">
+                    <i class="fas fa-image mr-2"></i> Выбрать аватар
+                </label>
+            </div>
+            <div id="avatarPreview" class="hidden animate-fade-in">
+                <p class="text-sm text-gray-400 mb-2">Предпросмотр:</p>
+                <img id="previewImage" class="w-24 h-24 rounded-full mx-auto object-cover" src="" alt="Предпросмотр аватарки">
+            </div>
+            <button id="registerBtn" class="w-full p-3 bg-gray-200 text-gray-900 hover:bg-gray-300 rounded-md font-semibold transition-all duration-200 flex items-center justify-center animate-slide-in">
+                <i class="fas fa-user-plus mr-2"></i> Зарегистрироваться
+            </button>
+            <button id="loginBtn" class="w-full p-3 bg-gray-600 hover:bg-gray-500 rounded-md font-semibold transition-all duration-200 flex items-center justify-center animate-slide-in">
+                <i class="fas fa-sign-in-alt mr-2"></i> Уже есть аккаунт? Войти
+            </button>
+        </div>
+        <p id="error" class="text-red-500 mt-4 hidden transition-all duration-200"></p>
+    </div>
+    <script src="/app.js"></script>
+</body>
+</html>
