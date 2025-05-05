@@ -241,6 +241,16 @@ Contributions are welcome to enhance this educational project! To contribute:
 
 Please include tests and update documentation.
 
+## TODO List
+
+|  Need to fix           |     State     |
+| ---------------------- | ------------- |
+| Add serialization      |      ❌       |
+| User manipulation Fix  |      ❌       |
+| Add JWT Token          |      ❌       |
+| Add DB protection      |      ❌       |
+| Fix HTML Injections    |      ❌       |
+
 ---
 
 ## License
